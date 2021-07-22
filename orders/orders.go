@@ -35,7 +35,6 @@ func Webservice() *restful.WebService {
 	ws.Route(ws.POST("/buy-item-qty").To(BuyItemQty))
 	ws.Route(ws.POST("/buy-item-qty-price").To(BuyItemQtyPrice))
 	ws.Route(ws.GET("/show-summary").To(ShowSummery))
-	ws.Route(ws.GET("/fast-buy-item").To(FastBuyItem))
+	ws.Route(ws.POST("/fast-buy-item").To(FastBuyItem))
 	return ws
-
 }
