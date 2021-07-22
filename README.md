@@ -67,11 +67,15 @@
     Method: GET
     Status: 200 OK
     Response Body:
-                {
-                    "id": "24-583-0264",
-                    "name": "Apple",
-                    "quantity": 30,
-                    "price": "$62.02"
+             {
+                "1e07c097-d4fc-4b30-918c-49bb649c0d12": {
+                    "Object": {
+                        "id": "24-583-0264",
+                        "name": "Apple",
+                        "quantity": 30,
+                        "price": "$62.02"
+                    },
+                    "Expiration": 0
                 }
 
 

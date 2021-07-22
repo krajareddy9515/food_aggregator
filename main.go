@@ -4,10 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"food_aggregator/orders"
-	"log"
 	"net/http"
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	restful "github.com/emicklei/go-restful"
 )

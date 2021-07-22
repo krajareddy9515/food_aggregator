@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	restful "github.com/emicklei/go-restful"
+	"github.com/patrickmn/go-cache"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -39,6 +41,7 @@ func BuyItem(req *restful.Request, resp *restful.Response) {
 	if len(result) > 0 {
 		for i := 0; i < len(result); i++ {
 			if result[i].Name == name {
+				c.Set(time.Now().Format("2006-01-02 15:04:05"), result[i], cache.NoExpiration)
 				resp.WriteAsJson(result[i])
 				return
 			}
@@ -77,6 +80,7 @@ func BuyItemQty(req *restful.Request, resp *restful.Response) {
 	if len(result) > 0 {
 		for i := 0; i < len(result); i++ {
 			if result[i].Name == name && result[i].Quantity == quantity {
+				c.Set(time.Now().Format("2006-01-02 15:04:05"), result[i], cache.NoExpiration)
 				resp.WriteAsJson(result[i])
 				return
 			}
@@ -102,7 +106,8 @@ func BuyItemQtyPrice(req *restful.Request, resp *restful.Response) {
 	name := order.Name
 	quantity := order.Quantity
 	price := order.Price
-	if name == "" || quantity == 0 {
+	log.Println(len(price))
+	if len(name) == 0 || len(price) == 0 || quantity <= 0 {
 		resp.WriteErrorString(400, "Invalid request body")
 		return
 	}
@@ -116,12 +121,18 @@ func BuyItemQtyPrice(req *restful.Request, resp *restful.Response) {
 	if len(result) > 0 {
 		for i := 0; i < len(result); i++ {
 			if result[i].Name == name && result[i].Quantity == quantity && result[i].Price == price {
+				c.Set(time.Now().Format("2006-01-02 15:04:05"), result[i], cache.NoExpiration)
 				resp.WriteAsJson(result[i])
 				return
 			}
 		}
 	}
 	resp.WriteAsJson("NOT_FOUND")
+}
+
+//ShowSummery : API to get summery
+func ShowSummery(req *restful.Request, resp *restful.Response) {
+	resp.WriteAsJson(c.Items())
 }
 
 // Suppliers: API to buy items from suppliers
