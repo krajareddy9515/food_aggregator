@@ -45,8 +45,8 @@ func BuyItem(req *restful.Request, resp *restful.Response) {
 	if len(result) > 0 {
 		for i := 0; i < len(result); i++ {
 			if result[i].Name == name {
-				c.Set(time.Now().Format("2006-01-02 15:04:05"), result[i], cache.NoExpiration)
-				resp.WriteAsJson(result[i])
+				c.Set(time.Now().Format("2006-01-02 15:04:05"), result[i].Name, cache.NoExpiration)
+				resp.WriteAsJson(result[i].Name)
 				return
 			}
 		}
@@ -85,7 +85,7 @@ func BuyItemQty(req *restful.Request, resp *restful.Response) {
 		for i := 0; i < len(result); i++ {
 			if result[i].Name == name && result[i].Quantity == quantity {
 				c.Set(time.Now().Format("2006-01-02 15:04:05"), result[i], cache.NoExpiration)
-				resp.WriteAsJson(result[i])
+				resp.WriteAsJson(result[i].Name)
 				return
 			}
 		}
@@ -126,7 +126,7 @@ func BuyItemQtyPrice(req *restful.Request, resp *restful.Response) {
 		for i := 0; i < len(result); i++ {
 			if result[i].Name == name && result[i].Quantity == quantity && result[i].Price == price {
 				c.Set(time.Now().Format("2006-01-02 15:04:05"), result[i], cache.NoExpiration)
-				resp.WriteAsJson(result[i])
+				resp.WriteAsJson(result[i].Name)
 				return
 			}
 		}
@@ -213,18 +213,16 @@ func FastBuyItem(req *restful.Request, resp *restful.Response) {
 	select {
 	case result1 := <-c1:
 		c.Set(time.Now().Format("2006-01-02 15:04:05"), result1, cache.NoExpiration)
-		resp.WriteAsJson(result1)
+		resp.WriteAsJson(result1.Name)
 	case result2 := <-c2:
 		c.Set(time.Now().Format("2006-01-02 15:04:05"), result2, cache.NoExpiration)
-		resp.WriteAsJson(result2)
+		resp.WriteAsJson(result2.Name)
 	case result3 := <-c3:
 		c.Set(time.Now().Format("2006-01-02 15:04:05"), result3, cache.NoExpiration)
-		resp.WriteAsJson(result3)
+		resp.WriteAsJson(result3.Name)
 		// default:
 		// 	resp.WriteAsJson("NOT_FOUND")
 	}
-
-	resp.WriteAsJson("NOT_FOUND")
 }
 
 // Suppliers: API to buy items from suppliers
