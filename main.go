@@ -17,7 +17,7 @@ var port int
 func init() {
 
 	//Log file setup
-	logFile, errLog := os.OpenFile("./foo_aggregator.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFile, errLog := os.OpenFile("./food_aggregator.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if errLog != nil {
 		log.Println("Unable to start log file", errLog)
 		panic(errLog)
