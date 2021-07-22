@@ -6,12 +6,26 @@ import (
 	"food_aggregator/orders"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	restful "github.com/emicklei/go-restful"
 )
 
 var port int
+
+func init() {
+
+	//Log file setup
+	logFile, errLog := os.OpenFile("./foo_aggregator.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if errLog != nil {
+		log.Println("Unable to start log file", errLog)
+		panic(errLog)
+	}
+
+	//Setting log file as the output
+	log.SetOutput(logFile)
+}
 
 func main() {
 
@@ -48,7 +62,6 @@ func main() {
 
 //heathCheck : API to check health
 func healthCheck(req *restful.Request, resp *restful.Response) {
-
 	resBody := []byte(`{"status":"OK"}`)
 	resp.Header().Set("Content-Type", "application/json")
 	resp.Write(resBody)

@@ -9,10 +9,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// BuyItem : API to check the item
 func BuyItem(req *restful.Request, resp *restful.Response) {
 
-	reqBody, _ := ioutil.ReadAll(req.Request.Body)
+	log.Printf(" In BuyItem API ")
 
+	reqBody, _ := ioutil.ReadAll(req.Request.Body)
 	order := Order{}
 
 	err := json.Unmarshal(reqBody, &order)
@@ -45,10 +47,11 @@ func BuyItem(req *restful.Request, resp *restful.Response) {
 	resp.WriteAsJson("NOT_FOUND")
 }
 
+//BuyItemQty : API to check quantity
 func BuyItemQty(req *restful.Request, resp *restful.Response) {
+	log.Printf("In BuyItemQty API ")
 
 	reqBody, _ := ioutil.ReadAll(req.Request.Body)
-
 	order := Order{}
 
 	err := json.Unmarshal(reqBody, &order)
@@ -82,10 +85,11 @@ func BuyItemQty(req *restful.Request, resp *restful.Response) {
 	resp.WriteAsJson("NOT_FOUND")
 }
 
+//BuyItemQtyPrice : API to check quantity and price
 func BuyItemQtyPrice(req *restful.Request, resp *restful.Response) {
+	log.Printf(" In BuyItemQtyPrice API ")
 
 	reqBody, _ := ioutil.ReadAll(req.Request.Body)
-
 	order := Order{}
 
 	err := json.Unmarshal(reqBody, &order)
@@ -120,12 +124,13 @@ func BuyItemQtyPrice(req *restful.Request, resp *restful.Response) {
 	resp.WriteAsJson("NOT_FOUND")
 }
 
+// Suppliers: API to buy items from suppliers
 func Suppliers(name string) ([]Order, error) {
+	log.Printf(" In Supplier ")
 
 	var client = &http.Client{}
 
 	for _, v := range urls {
-
 		req, err := http.NewRequest("GET", v, nil)
 		if err != nil {
 			log.Error(err)
