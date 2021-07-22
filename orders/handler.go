@@ -11,6 +11,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var fruitSupplier, vegSupplier, grainSupplier = "https://run.mocky.io/v3/c51441de-5c1a-4dc2-a44e-aab4f619926b",
+	"https://run.mocky.io/v3/4ec58fbc-e9e5-4ace-9ff0-4e893ef9663c",
+	"https://run.mocky.io/v3/e6c77e5c-aec9-403f-821b-e14114220148"
+
 // BuyItem : API to check the item
 func BuyItem(req *restful.Request, resp *restful.Response) {
 
@@ -27,7 +31,7 @@ func BuyItem(req *restful.Request, resp *restful.Response) {
 	}
 
 	name := order.Name
-	if name == "" {
+	if len(name) == 0 {
 		resp.WriteErrorString(400, "Invalid request body")
 		return
 	}
@@ -66,7 +70,7 @@ func BuyItemQty(req *restful.Request, resp *restful.Response) {
 
 	name := order.Name
 	quantity := order.Quantity
-	if name == "" || quantity == 0 {
+	if len(name) == 0 || quantity <= 0 {
 		resp.WriteErrorString(400, "Invalid request body")
 		return
 	}
@@ -175,4 +179,85 @@ func Suppliers(name string) ([]Order, error) {
 		}
 	}
 	return nil, nil
+}
+
+// FastBuyItem : API to check the item
+func FastBuyItem(req *restful.Request, resp *restful.Response) {
+
+	log.Printf(" In BuyItem API ")
+
+	reqBody, _ := ioutil.ReadAll(req.Request.Body)
+	order := Order{}
+
+	err := json.Unmarshal(reqBody, &order)
+	if err != nil {
+		log.Error(err)
+		resp.WriteErrorString(500, "Internal server error")
+		return
+	}
+
+	name := order.Name
+	if len(name) == 0 {
+		resp.WriteErrorString(400, "Invalid request body")
+		return
+	}
+
+	c1 := make(chan Order)
+	c2 := make(chan Order)
+	c3 := make(chan Order)
+
+	go FastSuppliers(name, c1, fruitSupplier)
+	go FastSuppliers(name, c2, vegSupplier)
+	go FastSuppliers(name, c3, grainSupplier)
+
+	select {
+	case result1 := <-c1:
+		c.Set(time.Now().Format("2006-01-02 15:04:05"), result1, cache.NoExpiration)
+		resp.WriteAsJson(result1)
+	case result2 := <-c2:
+		c.Set(time.Now().Format("2006-01-02 15:04:05"), result2, cache.NoExpiration)
+		resp.WriteAsJson(result2)
+	case result3 := <-c3:
+		c.Set(time.Now().Format("2006-01-02 15:04:05"), result3, cache.NoExpiration)
+		resp.WriteAsJson(result3)
+		// default:
+		// 	resp.WriteAsJson("NOT_FOUND")
+	}
+
+	resp.WriteAsJson("NOT_FOUND")
+}
+
+// Suppliers: API to buy items from suppliers
+func FastSuppliers(name string, c chan Order, url string) {
+	log.Printf(" In Supplier ")
+
+	var client = &http.Client{}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Error(err)
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		log.Error(err)
+	}
+
+	respBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Error(err)
+	}
+
+	order := []Order{}
+	errRes := json.Unmarshal(respBody, &order)
+
+	if errRes != nil {
+		log.Error(errRes)
+	}
+
+	for i := 0; i < len(order); i++ {
+		if order[i].Name == name {
+			c <- order[i]
+		}
+	}
 }
