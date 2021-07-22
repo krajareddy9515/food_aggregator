@@ -67,16 +67,16 @@
     Method: GET
     Status: 200 OK
     Response Body:
-             {
-                "1e07c097-d4fc-4b30-918c-49bb649c0d12": {
-                    "Object": {
+                    {
+                        "2021-07-22 17:28:07": {
+                        "Object": {
                         "id": "24-583-0264",
                         "name": "Apple",
                         "quantity": 30,
                         "price": "$62.02"
-                    },
-                    "Expiration": 0
-                }
+                         },
+                        "Expiration": 0
+                    }
 
 
 5. fast-buy-item
