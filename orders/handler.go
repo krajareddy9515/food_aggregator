@@ -9,11 +9,8 @@ import (
 	restful "github.com/emicklei/go-restful"
 	"github.com/patrickmn/go-cache"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
-
-var fruitSupplier, vegSupplier, grainSupplier = "https://run.mocky.io/v3/c51441de-5c1a-4dc2-a44e-aab4f619926b",
-	"https://run.mocky.io/v3/4ec58fbc-e9e5-4ace-9ff0-4e893ef9663c",
-	"https://run.mocky.io/v3/e6c77e5c-aec9-403f-821b-e14114220148"
 
 // BuyItem : API to check the item
 func BuyItem(req *restful.Request, resp *restful.Response) {
@@ -145,6 +142,8 @@ func Suppliers(name string) ([]Order, error) {
 
 	var client = &http.Client{}
 
+	urls := []string{viper.GetString("fruitSupplier"), viper.GetString("vegSupplier"), viper.GetString("grainSupplier")}
+
 	for _, v := range urls {
 		req, err := http.NewRequest("GET", v, nil)
 		if err != nil {
@@ -206,9 +205,9 @@ func FastBuyItem(req *restful.Request, resp *restful.Response) {
 	c2 := make(chan Order)
 	c3 := make(chan Order)
 
-	go FastSuppliers(name, c1, fruitSupplier)
-	go FastSuppliers(name, c2, vegSupplier)
-	go FastSuppliers(name, c3, grainSupplier)
+	go FastSuppliers(name, c1, viper.GetString("fruitSupplier"))
+	go FastSuppliers(name, c2, viper.GetString("vegSupplier"))
+	go FastSuppliers(name, c3, viper.GetString("grainSupplier"))
 
 	select {
 	case result1 := <-c1:

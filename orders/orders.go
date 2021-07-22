@@ -14,11 +14,6 @@ type Order struct {
 	Price    string `json:"price"`
 }
 
-var urls = []string{"https://run.mocky.io/v3/c51441de-5c1a-4dc2-a44e-aab4f619926b",
-	"https://run.mocky.io/v3/4ec58fbc-e9e5-4ace-9ff0-4e893ef9663c",
-	"https://run.mocky.io/v3/e6c77e5c-aec9-403f-821b-e14114220148",
-}
-
 var c = cache.New(5*time.Minute, 10*time.Minute)
 
 func Register(container *restful.Container) {

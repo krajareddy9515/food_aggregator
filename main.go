@@ -11,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	restful "github.com/emicklei/go-restful"
+	"github.com/spf13/viper"
 )
 
 var port int
@@ -26,6 +27,14 @@ func init() {
 
 	//Setting log file as the output
 	log.SetOutput(logFile)
+
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal("Error reading config file")
+	}
 }
 
 func main() {

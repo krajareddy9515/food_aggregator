@@ -7,4 +7,5 @@ require (
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/viper v1.8.1
 )
